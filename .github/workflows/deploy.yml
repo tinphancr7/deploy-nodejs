@@ -29,8 +29,8 @@ jobs:
         if: failure()
         uses: appleboy/telegram-action@master
         with:
-          to: ${{ secrets.TELEGRAM_CHAT_ID }}
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          to: 6097238709
+          token: 7881383186:AAFbl2ZbguXqrse-P7jGcgE08q6jIQu9stE
           message: |
             ❌ *Build Failed!*
             📦 Repo: `${{ github.repository }}`
