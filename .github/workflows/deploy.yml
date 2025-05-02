@@ -54,8 +54,12 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            export NVM_DIR="$HOME/.nvm"
+            source "$NVM_DIR/nvm.sh"
+            nvm use 20
             cd ${{ secrets.APP_DIR }}
-            git pull origin main
+            git fetch --all
+            git reset --hard origin/main
             echo "${{ secrets.ENV_PRODUCTION }}" > .env
             npm install -f
             pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
