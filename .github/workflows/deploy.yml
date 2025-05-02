@@ -25,12 +25,25 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Notify Telegram (Build Success)
+        if: success()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            ✅ *Build Successful!*
+            📦 Repo: `${{ github.repository }}`
+            🌿 Branch: `${{ github.ref_name }}`
+            🔗 [View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          format: markdown
+
       - name: Notify Telegram (Build Failure)
         if: failure()
         uses: appleboy/telegram-action@master
         with:
-          to: 6097238709
-          token: 7881383186:AAFbl2ZbguXqrse-P7jGcgE08q6jIQu9stE
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           message: |
             ❌ *Build Failed!*
             📦 Repo: `${{ github.repository }}`
