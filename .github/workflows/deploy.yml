@@ -74,7 +74,7 @@ jobs:
 
       - name: Notify Telegram (Success)
         if: success()
-        uses: appleboy/telegram-action@v0.1.1
+        uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -86,7 +86,7 @@ jobs:
           format: markdown
       - name: Notify Telegram (Failure)
         if: failure()
-        uses: appleboy/telegram-action@v0.1.1
+        uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
