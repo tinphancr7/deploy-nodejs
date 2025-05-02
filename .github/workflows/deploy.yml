@@ -9,6 +9,7 @@ jobs:
   build:
     name: Build Node App
     runs-on: ubuntu-latest
+    environment: deploy-nodejs
 
     steps:
       - name: Checkout Code
@@ -24,19 +25,6 @@ jobs:
 
       - name: Build project
         run: npm run build
-
-      - name: Notify Telegram (Build Success)
-        if: success()
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_CHAT_ID }}
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: |
-            ✅ *Build Successful!*
-            📦 Repo: `${{ github.repository }}`
-            🌿 Branch: `${{ github.ref_name }}`
-            🔗 [View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-          format: markdown
 
       - name: Notify Telegram (Build Failure)
         if: failure()
