@@ -25,15 +25,6 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: node-build
-          path: |
-            dist/
-            node_modules/
-            ecosystem.config.js
-            package.json
       - name: Notify Telegram (Build Failure)
         if: failure()
         uses: appleboy/telegram-action@master
@@ -47,6 +38,15 @@ jobs:
             🚨 [Check logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
           format: markdown
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-build
+          path: |
+            dist/
+            node_modules/
+            ecosystem.config.js
+            package.json
   deploy:
     name: Deploy to VPS
     runs-on: ubuntu-latest
