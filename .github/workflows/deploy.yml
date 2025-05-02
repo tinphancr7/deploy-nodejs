@@ -70,3 +70,29 @@ jobs:
             cd ${{ secrets.APP_DIR }}
             echo "${{ secrets.ENV_PRODUCTION }}" > .env
             pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
+            pm2 save
+
+      - name: Notify Telegram (Success)
+        if: success()
+        uses: appleboy/telegram-action@v0.1.1
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            ✅ *Deploy Successful!*
+            📦 Repo: `${{ github.repository }}`
+            🌿 Branch: `${{ github.ref_name }}`
+            🔗 [View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          format: markdown
+      - name: Notify Telegram (Failure)
+        if: failure()
+        uses: appleboy/telegram-action@v0.1.1
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            ❌ *Deploy Failed!*
+            📦 Repo: `${{ github.repository }}`
+            🌿 Branch: `${{ github.ref_name }}`
+            🚨 [Check logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          format: markdown

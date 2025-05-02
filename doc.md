@@ -1,0 +1,65 @@
+name: Build & Deploy Node.js App
+
+on:
+push:
+branches: - main
+
+jobs:
+build:
+name: Build App
+runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-build
+          path: |
+            dist
+            node_modules
+            package.json
+            ecosystem.config.js
+
+deploy:
+name: Deploy to Server
+runs-on: ubuntu-latest
+needs: build
+environment: deploy-nodejs
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: app-build
+
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export NVM_DIR="$HOME/.nvm"
+            source "$NVM_DIR/nvm.sh"
+            nvm use 20
+            cd ${{ secrets.APP_DIR }}
+            git fetch --all
+            git reset --hard origin/main
+            echo "${{ secrets.ENV_PRODUCTION }}" > .env
+            npm install -f
+            npm run build
+            pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
